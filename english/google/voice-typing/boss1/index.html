@@ -1,0 +1,1218 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+  <meta name="ad.size" content="width=320,height=480" />
+  <meta name="ad.orientation" content="portrait" />
+  <script src="https://tpc.googlesyndication.com/pagead/gadgets/html5/api/exitapi.js"></script>
+  <title>VoiceType Playable</title>
+  <style>
+    :root {
+      --bg: #050608;
+      --surface: #0d1016;
+      --surface-2: #111520;
+      --line: #242a37;
+      --text: #f4f6fb;
+      --muted: #9ca4b8;
+      --accent: #eef2ff;
+      --accent-ink: #0e1320;
+      --chip: #151a27;
+      --chip-on: #f0f3ff;
+      --chip-on-ink: #11172a;
+      --green: #0b3a24;
+      --green-line: #2b8152;
+      --bubble: #5f6be2;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      height: 100%;
+      background: radial-gradient(1100px 700px at 20% 0%, #121723 0%, #06070b 58%, #040507 100%);
+      color: var(--text);
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    .stage {
+      height: 100%;
+      display: grid;
+      place-items: center;
+      padding: 10px;
+    }
+
+    .phone {
+      width: min(430px, 100%);
+      height: min(900px, 100dvh - 12px);
+      border: 1px solid #2d3344;
+      border-radius: 24px;
+      background: linear-gradient(180deg, #080a0f 0%, #05070b 100%);
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+      position: relative;
+      box-shadow: 0 22px 72px rgba(0,0,0,0.56);
+    }
+
+    .head {
+      height: 58px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 14px;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      background: rgba(8,10,15,.95);
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      background: linear-gradient(145deg, #7985ff, #4b58d8);
+    }
+
+    .meta { line-height: 1.05; }
+    .meta strong { font-size: 14px; font-weight: 700; }
+    .meta small { font-size: 11px; color: var(--muted); }
+
+    .install-top {
+      margin-left: auto;
+      height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid #3c4459;
+      background: #121722;
+      color: #e9edfa;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .mission {
+      margin: 10px 12px 8px;
+      border: 1px solid #313951;
+      border-radius: 13px;
+      background: linear-gradient(150deg, #101422, #0c1018);
+      padding: 10px 12px;
+    }
+
+    .mission .kicker {
+      font-size: 10px;
+      color: #8e96ab;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .mission p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.3;
+    }
+
+    .progress {
+      margin-top: 8px;
+      height: 6px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #1e2536;
+    }
+
+    .progress > div {
+      width: 25%;
+      height: 100%;
+      background: linear-gradient(90deg, #7484ff, #8fecff);
+      transition: width .25s ease;
+    }
+
+    .chat {
+      overflow: auto;
+      padding: 2px 12px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .bubble {
+      max-width: 84%;
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-size: 17px;
+      line-height: 1.3;
+      border: 1px solid transparent;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .in {
+      align-self: flex-start;
+      background: #131824;
+      border-color: #2b3142;
+      color: #e6ebf8;
+    }
+
+    .out {
+      align-self: flex-end;
+      background: linear-gradient(145deg, #4d59c7, #636fe8);
+      color: #fff;
+    }
+
+    .compose {
+      border-top: 1px solid rgba(255,255,255,.08);
+      background: #0b0e14;
+      display: grid;
+      grid-template-columns: 38px minmax(0, 1fr) 44px;
+      gap: 8px;
+      padding: 10px 10px;
+    }
+
+    .compose button,
+    .compose textarea {
+      border: 1px solid #2a3141;
+      background: #111722;
+      border-radius: 12px;
+      color: var(--text);
+    }
+
+    .compose textarea {
+      resize: none;
+      min-height: 42px;
+      max-height: 90px;
+      padding: 9px 11px;
+      font-size: 20px;
+      line-height: 1.25;
+      font-family: inherit;
+      outline: none;
+      overflow: hidden;
+    }
+
+    .send {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .03em;
+    }
+
+    .send:disabled {
+      opacity: .5;
+      filter: grayscale(1);
+    }
+
+    .send.pulse {
+      box-shadow: 0 0 0 2px rgba(135,149,255,.34) inset;
+      border-color: #9dacff;
+      animation: sendPulse 1s ease-out infinite;
+    }
+
+    @keyframes sendPulse {
+      0%, 100% { box-shadow: 0 0 0 2px rgba(135,149,255,.3) inset; }
+      50% { box-shadow: 0 0 0 3px rgba(135,149,255,.52) inset; }
+    }
+
+    .kbd {
+      border-top: 1px solid #1f2635;
+      background: #080b11;
+      padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 6px);
+    }
+
+    .tools {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px 8px;
+      justify-content: center;
+    }
+
+    .divider {
+      width: 1px;
+      height: 16px;
+      background: #333b52;
+    }
+
+    .tool {
+      width: 31px;
+      height: 31px;
+      border-radius: 50%;
+      border: 1px solid #2b3344;
+      background: #0f1521;
+      color: #eef2ff;
+      display: grid;
+      place-items: center;
+      font-size: 14px;
+      padding: 0;
+      position: relative;
+    }
+
+    .tool svg {
+      width: 17px;
+      height: 17px;
+      stroke: #eff3ff;
+      fill: none;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .tool.active {
+      box-shadow: 0 0 0 2px rgba(128,140,255,.24) inset;
+      border-color: #9ba8ff;
+    }
+
+    .tool.hint-target {
+      background: #ffffff;
+      border-color: #ffffff;
+      color: #0c1220;
+      box-shadow: 0 0 0 2px rgba(255,255,255,.35);
+    }
+
+    .tool.hint-target svg {
+      stroke: #0c1220;
+    }
+
+    .tool.mic {
+      background: radial-gradient(circle at 28% 20%, #1b7f4a, #0f4f2e 55%, #0b3520 100%);
+      border-color: var(--green-line);
+    }
+
+    .tool.pulse::after {
+      content: "";
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 1px solid rgba(145,160,255,.9);
+      animation: pulse 1.05s ease-out infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: .95; }
+      100% { transform: scale(1.34); opacity: 0; }
+    }
+
+    .rows {
+      display: grid;
+      gap: 6px;
+      padding: 0 8px 6px;
+    }
+
+    .row { display: grid; gap: 6px; }
+    .r1 { grid-template-columns: repeat(10, minmax(0,1fr)); }
+    .r2 { grid-template-columns: repeat(9, minmax(0,1fr)); margin-inline: 16px; }
+    .r3 { grid-template-columns: 1.35fr repeat(7,minmax(0,1fr)) 1.35fr; }
+    .r4 { grid-template-columns: 1.1fr 1.2fr 4fr 1.1fr 1.2fr; }
+
+    .key {
+      height: 42px;
+      border: 1px solid #1d2432;
+      border-radius: 10px;
+      background: linear-gradient(180deg, #151a26, #101520);
+      color: #f0f3fb;
+      font-size: 26px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+    }
+
+    .key.small { font-size: 14px; }
+    .key.enter { background: linear-gradient(180deg, #6f7cff, #4c57d5); }
+
+    .panel {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: min(56%, 480px);
+      border-top: 1px solid #313a53;
+      background: linear-gradient(180deg, #0b0f16 0%, #070a10 100%);
+      z-index: 20;
+      display: grid;
+      grid-template-rows: auto auto minmax(0,1fr);
+      animation: rise .22s ease;
+    }
+
+    @keyframes rise { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    .panel.hidden,
+    .final.hidden,
+    .coach.hidden,
+    .hide { display: none !important; }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 11px;
+    }
+
+    .back {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      border: 1px solid #2f3650;
+      background: #101522;
+      color: #f0f3ff;
+      font-size: 22px;
+      line-height: 1;
+      padding: 0;
+    }
+
+    .panel-head h3 {
+      margin: 0;
+      font-size: 33px;
+      font-weight: 800;
+      letter-spacing: -.01em;
+    }
+
+    .lang {
+      margin-left: auto;
+      border: 1px solid #3d4662;
+      height: 34px;
+      padding: 0 11px;
+      border-radius: 999px;
+      background: #0f141f;
+      color: #ebeffa;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .pills {
+      display: flex;
+      gap: 8px;
+      overflow: auto;
+      padding: 0 11px 8px;
+    }
+
+    .pill {
+      border: 1px solid #2f374c;
+      background: var(--chip);
+      color: #e2e7f5;
+      height: 34px;
+      padding: 0 12px;
+      border-radius: 999px;
+      white-space: nowrap;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .pill.on {
+      background: var(--chip-on);
+      border-color: var(--chip-on);
+      color: var(--chip-on-ink);
+    }
+
+    .pill.pulse {
+      box-shadow: 0 0 0 2px rgba(135,149,255,.3) inset;
+      border-color: #9dacff;
+      animation: pillPulse 1s ease-out infinite;
+    }
+
+    @keyframes pillPulse {
+      0%, 100% { box-shadow: 0 0 0 2px rgba(135,149,255,.25) inset; }
+      50% { box-shadow: 0 0 0 3px rgba(135,149,255,.48) inset; }
+    }
+
+    .content {
+      overflow: auto;
+      padding: 0 10px calc(env(safe-area-inset-bottom,0px) + 10px);
+      display: grid;
+      gap: 8px;
+    }
+
+    .opt {
+      border: 1px solid #2d3549;
+      background: #0d121d;
+      border-radius: 11px;
+      color: #f2f6ff;
+      text-align: left;
+      font-size: 16px;
+      line-height: 1.28;
+      padding: 10px 11px;
+      min-height: 62px;
+    }
+
+    .opt.single {
+      min-height: 130px;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+    }
+
+    .shimmer {
+      min-height: 58px;
+      border-radius: 11px;
+      border: 1px solid #2b3348;
+      background: linear-gradient(110deg, #0f131d 8%, #283044 24%, #0f131d 42%);
+      background-size: 220% 100%;
+      animation: shim 1.15s linear infinite;
+    }
+
+    .shimmer.single { min-height: 170px; }
+
+    @keyframes shim { to { background-position-x: -220%; } }
+
+    .coach {
+      position: absolute;
+      z-index: 45;
+      pointer-events: auto;
+      transition: left .2s ease, top .2s ease;
+    }
+
+    .coach.down .coach-arrow {
+      border-top: 0;
+      border-bottom: 12px solid #9cb2ff;
+      animation: bobDown 1s ease-in-out infinite;
+    }
+
+    .coach-arrow {
+      width: 0;
+      height: 0;
+      margin: 0 auto;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 12px solid #9cb2ff;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,.45));
+      animation: bob 1s ease-in-out infinite;
+    }
+
+    .coach-label {
+      margin-top: 5px;
+      background: #0f1627;
+      border: 1px solid #40507b;
+      color: #edf2ff;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.25;
+      padding: 6px 8px;
+      white-space: nowrap;
+      box-shadow: 0 10px 24px rgba(0,0,0,.38);
+    }
+
+    @keyframes bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(4px); }
+    }
+
+    @keyframes bobDown {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+    .final {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      border-radius: 16px;
+      border: 1px solid #374059;
+      background: linear-gradient(180deg, #111726, #0b1019);
+      z-index: 40;
+      padding: 14px;
+    }
+
+    .final h2 {
+      margin: 0;
+      font-size: 19px;
+      font-weight: 800;
+    }
+
+    .final p {
+      margin: 6px 0 0;
+      color: #cad1e3;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .actions {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .actions button {
+      flex: 1;
+      height: 42px;
+      border-radius: 11px;
+      font-weight: 800;
+    }
+
+    .cta {
+      border: none;
+      background: #f0f3ff;
+      color: #121726;
+    }
+
+    .ghost {
+      background: transparent;
+      border: 1px solid #404a63;
+      color: #e2e8f8;
+    }
+
+    .toast {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: calc(env(safe-area-inset-bottom,0px) + 12px);
+      border-radius: 999px;
+      border: 1px solid #3b4460;
+      background: #0f1522;
+      color: #e9edf9;
+      font-size: 13px;
+      height: 34px;
+      padding: 0 13px;
+      display: grid;
+      place-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s ease;
+      z-index: 55;
+    }
+
+    .toast.show { opacity: 1; }
+
+    @media (max-height: 760px) {
+      .bubble { font-size: 16px; }
+      .key { height: 40px; font-size: 24px; }
+      .panel-head h3 { font-size: 28px; }
+      .opt { font-size: 15px; }
+      .opt.single { font-size: 17px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage">
+    <section class="phone" id="phone">
+      <header class="head">
+        <div class="avatar">S</div>
+        <div class="meta"><strong>Boss</strong><br><small>online now</small></div>
+        <button class="install-top" id="installTop" type="button">Install</button>
+      </header>
+
+      <section class="mission">
+        <div class="kicker">Interactive Demo</div>
+        <p id="missionText">Tap the <b>Aa</b> icon (Grammar Fix) to clean the draft text.</p>
+        <div class="progress"><div id="progress"></div></div>
+      </section>
+
+      <section class="chat" id="chat">
+        <article class="bubble in">Why did you not come to work today?</article>
+        <article class="bubble in">I need an explanation now.</article>
+      </section>
+
+      <section class="compose">
+        <button type="button" aria-label="add">+</button>
+        <textarea id="input" rows="1">yo boss i no come cuz bed was comfy and i didnt wanna dude</textarea>
+        <button class="send" id="send" type="button" disabled aria-label="send">Send</button>
+      </section>
+
+      <section class="kbd" id="kbd">
+        <div class="tools" id="tools">
+          <button class="tool" data-mode="more" aria-label="more">...</button>
+          <button class="tool" data-mode="clipboard" aria-label="clipboard">
+            <svg viewBox="0 0 24 24"><rect x="7" y="6" width="10" height="14" rx="2"></rect><path d="M9 6.5h6M10 4h4"></path></svg>
+          </button>
+          <button class="tool" data-mode="emoji" aria-label="emoji">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"></circle><circle cx="9" cy="10" r="1"></circle><circle cx="15" cy="10" r="1"></circle><path d="M9 14c.8 1 1.9 1.5 3 1.5s2.2-.5 3-1.5"></path></svg>
+          </button>
+          <span class="divider"></span>
+          <button class="tool ai" data-mode="translate" aria-label="translate">Tx</button>
+          <button class="tool ai" data-mode="ask" aria-label="ask">
+            <svg viewBox="0 0 24 24"><path d="M4 6.5a2.5 2.5 0 0 1 2.5-2.5h11A2.5 2.5 0 0 1 20 6.5v6A2.5 2.5 0 0 1 17.5 15H11l-4.5 4v-4H6.5A2.5 2.5 0 0 1 4 12.5z"></path></svg>
+          </button>
+          <button class="tool ai" data-mode="tone" aria-label="tone">
+            <svg viewBox="0 0 24 24"><path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8z"></path></svg>
+          </button>
+          <button class="tool ai" data-mode="grammar" aria-label="grammar">Aa</button>
+          <button class="tool mic" data-mode="voice" aria-label="voice">
+            <svg viewBox="0 0 24 24"><rect x="9" y="4" width="6" height="10" rx="3"></rect><path d="M6.5 11.5a5.5 5.5 0 0 0 11 0M12 17v3M9 20h6"></path></svg>
+          </button>
+        </div>
+
+        <div class="rows" id="rows"></div>
+      </section>
+
+      <section class="panel hidden" id="panel">
+        <header class="panel-head">
+          <button class="back" id="back" type="button">‹</button>
+          <h3 id="title">Fix Grammar</h3>
+          <button class="lang hide" id="lang" type="button">French v</button>
+        </header>
+        <div class="pills" id="pills"></div>
+        <div class="content" id="content"></div>
+      </section>
+
+      <section class="final hidden" id="final">
+        <h2>Reply polished and ready.</h2>
+        <p>VoiceType fixed grammar and tone in seconds. Install to use the full keyboard on your phone.</p>
+        <div class="actions">
+          <button class="cta" id="installBottom" type="button">Get AI Keyboard</button>
+          <button class="ghost" id="replay" type="button">Replay</button>
+        </div>
+      </section>
+
+      <div class="coach hidden" id="coach">
+        <div class="coach-arrow"></div>
+        <div class="coach-label" id="coachLabel"></div>
+      </div>
+
+      <div class="toast" id="toast"></div>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const STORE = "https://play.google.com/store/apps/details?id=com.voice.typing.keyboard";
+      const SENDER_REPLY = "Thanks for the clarification. This reply is clear and professional.";
+
+      const state = {
+        step: 0,
+        mode: null,
+        pill: null,
+        language: "French",
+        grammarApplied: false,
+        toneApplied: false,
+      };
+
+      const steps = [
+        { text: "Tap the <b>Aa</b> icon (Grammar Fix) to clean the draft text.", progress: 20, coach: "grammar", coachText: "Tap Aa icon" },
+        { text: "Pick one grammar result.", progress: 40, coach: null, coachText: "" },
+        { text: "Tap the <b>✦</b> icon (Word Tone) and choose <b>Professional</b>.", progress: 65, coach: "tone", coachText: "Tap ✦ icon" },
+        { text: "Pick a professional tone result.", progress: 85, coach: null, coachText: "" },
+        { text: "Great. Tap <b>Send</b> to finish.", progress: 100, coach: "send", coachText: "Tap Send" },
+      ];
+
+      const cfg = {
+        grammar: { title: "Fix Grammar", lang: false, single: false, pills: ["Grammar Fix", "Rephrase", "Fix Vocab"] },
+        tone: { title: "Word Tone", lang: false, single: false, pills: ["Rewrite", "Professional", "Casual", "Friendly"] },
+        translate: { title: "Translate", lang: true, single: true, pills: ["Translate"] },
+        ask: { title: "Ask AI", lang: false, single: true, pills: ["Answer"] },
+      };
+
+      const el = {
+        phone: document.getElementById("phone"),
+        mission: document.getElementById("missionText"),
+        progress: document.getElementById("progress"),
+        input: document.getElementById("input"),
+        send: document.getElementById("send"),
+        tools: document.getElementById("tools"),
+        rows: document.getElementById("rows"),
+        panel: document.getElementById("panel"),
+        back: document.getElementById("back"),
+        title: document.getElementById("title"),
+        lang: document.getElementById("lang"),
+        pills: document.getElementById("pills"),
+        content: document.getElementById("content"),
+        toast: document.getElementById("toast"),
+        chat: document.getElementById("chat"),
+        final: document.getElementById("final"),
+        replay: document.getElementById("replay"),
+        installTop: document.getElementById("installTop"),
+        installBottom: document.getElementById("installBottom"),
+        coach: document.getElementById("coach"),
+        coachLabel: document.getElementById("coachLabel"),
+      };
+
+      const rows = [
+        { cls: "r1", keys: ["q","w","e","r","t","y","u","i","o","p"] },
+        { cls: "r2", keys: ["a","s","d","f","g","h","j","k","l"] },
+        { cls: "r3", keys: ["SH","z","x","c","v","b","n","m","BK"] },
+        { cls: "r4", keys: ["123","LG","space",".","EN"] },
+      ];
+
+      function install() {
+        if (window.ExitApi && typeof window.ExitApi.exit === "function") {
+          window.ExitApi.exit();
+          return;
+        }
+        if (window.mraid && typeof window.mraid.open === "function") {
+          window.mraid.open(STORE);
+          return;
+        }
+        window.open(STORE, "_blank", "noopener,noreferrer");
+      }
+
+      function setStep(n) {
+        state.step = Math.max(0, Math.min(steps.length - 1, n));
+        const step = steps[state.step];
+        el.mission.innerHTML = step.text;
+        el.progress.style.width = step.progress + "%";
+        updateCoachForStep();
+      }
+
+      function toast(msg) {
+        el.toast.textContent = msg;
+        el.toast.classList.add("show");
+        clearTimeout(toast.t);
+        toast.t = setTimeout(() => el.toast.classList.remove("show"), 1200);
+      }
+
+      function autoH() {
+        el.input.style.height = "auto";
+        el.input.style.height = Math.min(el.input.scrollHeight, 92) + "px";
+      }
+
+      function showCoachOnElement(targetEl, label, offset = 54) {
+        el.coach.classList.add("hidden");
+      }
+
+      function updateCoachForStep() {
+        const step = steps[state.step];
+        el.tools.querySelectorAll(".tool").forEach((btn) => btn.classList.remove("pulse", "hint-target"));
+        el.pills.querySelectorAll(".pill").forEach((pill) => pill.classList.remove("pulse"));
+        el.send.classList.remove("pulse");
+        el.coach.classList.add("hidden");
+
+        if (!step || !step.coach) {
+          return;
+        }
+
+        if (step.coach === "grammar") {
+          const btn = el.tools.querySelector('[data-mode="grammar"]');
+          if (btn) btn.classList.add("pulse", "hint-target");
+          return;
+        }
+
+        if (step.coach === "tone") {
+          const btn = el.tools.querySelector('[data-mode="tone"]');
+          if (btn) btn.classList.add("pulse", "hint-target");
+          return;
+        }
+
+        if (step.coach === "send") {
+          el.send.classList.add("pulse");
+          return;
+        }
+      }
+
+      function normalize(v) {
+        return v.replace(/\s+/g, " ").replace(/\s+([,.!?])/g, "$1").trim();
+      }
+
+      function grammar(v) {
+        return [
+          "Good morning. I was unwell today and could not come to work. I apologize for the short notice.",
+          "I am sorry for missing work today. I had a health issue this morning and informed the team late.",
+          "Apologies for my absence today. I was not feeling well and should have updated you earlier.",
+        ];
+      }
+
+      function tone(v, pill) {
+        const q = /\?\s*$/.test(v.trim());
+        const end = (s) => q ? s.replace(/[.!]?$/, "?") : s;
+
+        if (pill === "Professional") {
+          return [
+            end("I apologize for missing work today. I was unwell this morning and should have informed you sooner."),
+            end("I am sorry for my absence today. I had a medical issue and I am now available to continue work."),
+            end("Please accept my apology for not coming in today. I was unwell and I will provide updates promptly."),
+          ];
+        }
+        if (pill === "Casual") {
+          return [
+            end("Can’t make it tomorrow, sorry!"),
+            end("I’m out for tomorrow, my bad."),
+            end("Not gonna make it tomorrow, but thanks for asking."),
+          ];
+        }
+        if (pill === "Friendly") {
+          return [
+            end("I can’t make it tomorrow, but thanks so much for inviting me!"),
+            end("I won’t be able to join tomorrow. Hope you all have a great time!"),
+            end("Sorry, I can’t come tomorrow. Let’s catch up soon!"),
+          ];
+        }
+
+        return [
+          end("I can’t come tomorrow."),
+          end("I won’t be able to join tomorrow."),
+          end("Sorry, I can’t make it tomorrow."),
+        ];
+      }
+
+      function translate(v) {
+        const low = normalize(v).toLowerCase();
+        if (state.language === "French") {
+          if (low.includes("tomorrow")) return ["Je ne pourrai pas venir demain, merci de votre compréhension."];
+          return ["Pouvez-vous m'aider à reformuler ce message en français ?"];
+        }
+        if (state.language === "Spanish") return ["No podré ir mañana, gracias por entender."];
+        if (state.language === "Arabic") return ["لن أتمكن من الحضور غدا، شكرا لتفهمك."];
+        return [v];
+      }
+
+      function ask(v) {
+        const low = normalize(v).toLowerCase();
+        if (low.includes("steakhouse")) return ["For a premium steakhouse, pick one with dry-aged cuts and strong local reviews."];
+        if (low.includes("radius") && low.includes("circle")) return ["The radius is the distance from a circle’s center to any point on its edge."];
+        return ["Here is a clean reply: Thanks for your message. I’ll confirm shortly."];
+      }
+
+      function renderSkeleton(single) {
+        el.content.innerHTML = "";
+        const total = single ? 1 : 3;
+        for (let i = 0; i < total; i++) {
+          const s = document.createElement("div");
+          s.className = "shimmer" + (single ? " single" : "");
+          el.content.appendChild(s);
+        }
+      }
+
+      function applyChoice(text) {
+        if (state.step === 2 && state.mode === "tone" && state.pill !== "Professional") {
+          toast("Tap Professional first");
+          const professionalPill = el.pills.querySelector('.pill[data-name="Professional"]');
+          if (professionalPill) {
+            professionalPill.classList.add("pulse");
+            showCoachOnElement(professionalPill, "Choose Professional", 72);
+          }
+          return;
+        }
+
+        el.input.value = text;
+        autoH();
+        closePanel();
+
+        if (state.step === 1) {
+          state.grammarApplied = true;
+          setStep(2);
+        } else if (state.step === 3) {
+          state.toneApplied = true;
+          setStep(4);
+          el.send.disabled = false;
+        }
+      }
+
+      function renderChoices(list, single) {
+        el.content.innerHTML = "";
+        list.forEach((txt) => {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "opt" + (single ? " single" : "");
+          b.textContent = txt;
+          b.addEventListener("click", () => applyChoice(txt));
+          el.content.appendChild(b);
+        });
+      }
+
+      function generate(mode, pill) {
+        const src = el.input.value;
+        if (mode === "grammar") {
+          if (pill === "Rephrase") return tone(src, "Rewrite");
+          if (pill === "Fix Vocab") return [
+            "I won’t be able to attend tomorrow, but I appreciate the invitation.",
+            "I’m unavailable tomorrow. Thank you for understanding.",
+            "I can’t join tomorrow, though I’d love to catch up another time.",
+          ];
+          return grammar(src);
+        }
+        if (mode === "tone") return tone(src, pill);
+        if (mode === "translate") return translate(src);
+        if (mode === "ask") return ask(src);
+        return [src];
+      }
+
+      function pickPill(name) {
+        state.pill = name;
+        el.pills.querySelectorAll(".pill").forEach((p) => p.classList.toggle("on", p.dataset.name === name));
+
+        const single = !!cfg[state.mode].single;
+        renderSkeleton(single);
+
+        setTimeout(() => {
+          renderChoices(generate(state.mode, name), single);
+        }, 420);
+
+        if (state.step === 2 && state.mode === "tone" && name === "Professional") {
+          setStep(3);
+          return;
+        }
+
+        if (state.mode === "tone" && state.step === 2) {
+          const professionalPill = el.pills.querySelector('.pill[data-name="Professional"]');
+          if (professionalPill) {
+            professionalPill.classList.add("pulse");
+            showCoachOnElement(professionalPill, "Choose Professional", 72);
+          }
+        }
+      }
+
+      function closePanel() {
+        el.panel.classList.add("hidden");
+        state.mode = null;
+        el.tools.querySelectorAll(".tool.ai").forEach((n) => n.classList.remove("active"));
+        updateCoachForStep();
+      }
+
+      function expectedModeForStep() {
+        if (state.step === 0 || state.step === 1) return "grammar";
+        if (state.step === 2 || state.step === 3) return "tone";
+        return null;
+      }
+
+      function coachLabelForMode(mode) {
+        if (mode === "grammar") return "Tap Aa icon";
+        if (mode === "tone") return "Tap ✦ icon";
+        if (mode === "translate") return "Tap Tx icon";
+        if (mode === "ask") return "Tap chat bubble icon";
+        return "Follow the highlighted step";
+      }
+
+      function guideToMode(mode, msg) {
+        if (msg) toast(msg);
+        const btn = el.tools.querySelector(`[data-mode="${mode}"]`);
+        if (!btn) {
+          updateCoachForStep();
+          return;
+        }
+        el.tools.querySelectorAll(".tool").forEach((n) => n.classList.remove("pulse", "hint-target"));
+        btn.classList.add("pulse", "hint-target");
+        setTimeout(() => btn.classList.remove("pulse"), 900);
+      }
+
+      function shouldBlockMode(mode) {
+        const expectedMode = expectedModeForStep();
+
+        if (!expectedMode) {
+          if (mode === "ask" || mode === "translate") {
+            toast("This demo focuses on Grammar Fix + Word Tone");
+            return true;
+          }
+          return false;
+        }
+
+        if (mode === expectedMode) return false;
+
+        if (state.step === 1) {
+          guideToMode("grammar", "Pick a Grammar suggestion first under Aa");
+          return true;
+        }
+
+        if (state.step === 3) {
+          guideToMode("tone", "Pick a Professional result under ✦");
+          return true;
+        }
+
+        if (state.step === 4) {
+          toast("Tap Send to finish");
+          el.send.classList.add("pulse");
+          setTimeout(() => el.send.classList.remove("pulse"), 900);
+          return true;
+        }
+
+        if (expectedMode === "grammar") {
+          guideToMode("grammar", "Start with the Aa icon (Grammar Fix)");
+          return true;
+        }
+
+        guideToMode("tone", "Now tap the ✦ icon (Word Tone)");
+        return true;
+      }
+
+      function open(mode) {
+        if (!cfg[mode]) return;
+        if (shouldBlockMode(mode)) return;
+
+        state.mode = mode;
+        el.tools.querySelectorAll(".tool.ai").forEach((n) => n.classList.toggle("active", n.dataset.mode === mode));
+
+        el.title.textContent = cfg[mode].title;
+        el.lang.classList.toggle("hide", !cfg[mode].lang);
+        el.lang.textContent = state.language + " v";
+
+        el.pills.innerHTML = "";
+        cfg[mode].pills.forEach((name) => {
+          const p = document.createElement("button");
+          p.type = "button";
+          p.className = "pill";
+          p.dataset.name = name;
+          p.textContent = name;
+          p.addEventListener("click", () => pickPill(name));
+          el.pills.appendChild(p);
+        });
+
+        el.panel.classList.remove("hidden");
+        el.coach.classList.add("hidden");
+        pickPill(cfg[mode].pills[0]);
+
+        if (mode === "tone" && state.step === 2) {
+          const professionalPill = el.pills.querySelector('.pill[data-name="Professional"]');
+          if (professionalPill) {
+            professionalPill.classList.add("pulse");
+            showCoachOnElement(professionalPill, "Choose Professional", 72);
+          }
+        }
+
+        if (state.step === 0 && mode === "grammar") setStep(1);
+      }
+
+      function renderKeys() {
+        el.rows.innerHTML = "";
+
+        rows.forEach((row) => {
+          const r = document.createElement("div");
+          r.className = "row " + row.cls;
+          row.keys.forEach((key) => {
+            const b = document.createElement("button");
+            b.type = "button";
+            b.className = "key" + (key.length > 1 ? " small" : "") + (key === "EN" ? " enter" : "");
+            b.textContent = key;
+            b.addEventListener("click", () => onKey(key));
+            r.appendChild(b);
+          });
+          el.rows.appendChild(r);
+        });
+      }
+
+      function onKey(k) {
+        if (k === "BK") {
+          const s = el.input.selectionStart;
+          const e = el.input.selectionEnd;
+          if (s !== e) {
+            el.input.setRangeText("", s, e, "end");
+          } else if (s > 0) {
+            el.input.setRangeText("", s - 1, e, "end");
+          }
+          autoH();
+          return;
+        }
+
+        if (k === "space") {
+          put(" ");
+          return;
+        }
+
+        if (k === "EN") {
+          submit();
+          return;
+        }
+
+        if (k === "SH" || k === "123" || k === "LG") {
+          toast("Available in full app");
+          return;
+        }
+
+        put(k);
+      }
+
+      function put(v) {
+        const s = el.input.selectionStart;
+        const e = el.input.selectionEnd;
+        el.input.setRangeText(v, s, e, "end");
+        autoH();
+      }
+
+      function submit() {
+        if (el.send.disabled) {
+          toast("Complete AI steps first");
+          return;
+        }
+
+        const txt = normalize(el.input.value);
+        if (!txt) return;
+
+        const b = document.createElement("article");
+        b.className = "bubble out";
+        b.textContent = txt;
+        el.chat.appendChild(b);
+        el.chat.scrollTop = el.chat.scrollHeight;
+
+        el.coach.classList.add("hidden");
+        setTimeout(() => {
+          const reply = document.createElement("article");
+          reply.className = "bubble in";
+          reply.textContent = SENDER_REPLY;
+          el.chat.appendChild(reply);
+          el.chat.scrollTop = el.chat.scrollHeight;
+
+          setTimeout(() => {
+            el.final.classList.remove("hidden");
+          }, 260);
+        }, 260);
+      }
+
+      function reset() {
+        state.step = 0;
+        state.mode = null;
+        state.pill = null;
+        state.language = "French";
+        state.grammarApplied = false;
+        state.toneApplied = false;
+
+        el.input.value = "yo boss i no come cuz bed was comfy and i didnt wanna dude";
+        autoH();
+        el.send.disabled = true;
+        closePanel();
+        el.final.classList.add("hidden");
+
+        el.chat.querySelectorAll(".bubble.out").forEach((b) => b.remove());
+        el.chat.querySelectorAll(".bubble.in").forEach((b, i) => {
+          if (i > 1) b.remove();
+        });
+
+        setStep(0);
+      }
+
+      function bind() {
+        el.input.addEventListener("input", autoH);
+
+        el.tools.addEventListener("click", (ev) => {
+          const t = ev.target.closest(".tool");
+          if (!t) return;
+          const m = t.dataset.mode;
+
+          if (m === "grammar" || m === "tone" || m === "ask" || m === "translate") {
+            open(m);
+            return;
+          }
+
+          if (m === "voice") {
+            toast("Voice demo in app");
+            return;
+          }
+
+          toast("Tool available in app");
+        });
+
+        el.back.addEventListener("click", closePanel);
+
+        el.lang.addEventListener("click", () => {
+          state.language = state.language === "French" ? "Spanish" : state.language === "Spanish" ? "Arabic" : "French";
+          el.lang.textContent = state.language + " v";
+          if (state.mode === "translate") pickPill("Translate");
+        });
+
+        el.send.addEventListener("click", submit);
+        el.replay.addEventListener("click", reset);
+        el.installTop.addEventListener("click", install);
+        el.installBottom.addEventListener("click", install);
+        window.addEventListener("resize", updateCoachForStep);
+      }
+
+      let started = false;
+      function startPlayable() {
+        if (started) return;
+        started = true;
+        renderKeys();
+        bind();
+        autoH();
+        setStep(0);
+      }
+
+      if (window.mraid && typeof window.mraid.getState === "function") {
+        const stateValue = window.mraid.getState();
+        if (stateValue === "loading") {
+          window.mraid.addEventListener("ready", startPlayable);
+        } else {
+          startPlayable();
+        }
+      } else {
+        startPlayable();
+      }
+    })();
+  </script>
+</body>
+</html>
+
